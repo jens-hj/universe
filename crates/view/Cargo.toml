@@ -1,0 +1,18 @@
+[package]
+name = "view"
+version = "0.1.0"
+edition.workspace = true
+repository.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+# Internal crates
+mechanics.workspace = true
+
+# Third party crates
+bevy.workspace = true
+bevy_rts_camera.workspace = true
+
+[lints]
+workspace = true
