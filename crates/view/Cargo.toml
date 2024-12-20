@@ -1,9 +1,9 @@
 [package]
-name = "view"
-version = "0.1.0"
-edition.workspace = true
-repository.workspace = true
-authors.workspace = true
+name                   = "view"
+version                = "0.1.0"
+edition.workspace      = true
+repository.workspace   = true
+authors.workspace      = true
 rust-version.workspace = true
 
 [dependencies]
@@ -11,8 +11,11 @@ rust-version.workspace = true
 mechanics.workspace = true
 
 # Third party crates
-bevy.workspace = true
-bevy_rts_camera.workspace = true
+bevy.workspace                = true
+bevy_blendy_cameras.workspace = true
+rand.workspace                = true
+strum.workspace               = true
+strum_macros.workspace        = true
 
 [lints]
 workspace = true

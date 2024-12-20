@@ -1,14 +1,19 @@
 use bevy::prelude::*;
-use bevy_rts_camera::RtsCameraPlugin;
+use bevy_blendy_cameras::BlendyCamerasPlugin;
 
-use crate::{init_protons, setup_view};
+use crate::{init_particles, setup_view, spawn_particles};
 
 pub struct ViewPlugin;
 
 impl Plugin for ViewPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(RtsCameraPlugin)
-            .add_systems(Startup, setup_view)
-            .add_systems(Update, init_protons);
+        app.insert_resource(AmbientLight {
+            brightness: 300.0,
+            ..default()
+        })
+        .insert_resource(ClearColor(Color::srgb_u8(30, 30, 46)))
+        .add_plugins(BlendyCamerasPlugin)
+        .add_systems(Startup, (setup_view, spawn_particles))
+        .add_systems(Update, init_particles);
     }
 }

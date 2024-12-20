@@ -1,13 +1,15 @@
 [package]
-name = "mechanics"
-version = "0.1.0"
-edition.workspace = true
-repository.workspace = true
-authors.workspace = true
+name                   = "mechanics"
+version                = "0.1.0"
+edition.workspace      = true
+repository.workspace   = true
+authors.workspace      = true
 rust-version.workspace = true
 
 [dependencies]
-bevy.workspace = true
+bevy.workspace         = true
+strum.workspace        = true
+strum_macros.workspace = true
 
 [lints]
 workspace = true
