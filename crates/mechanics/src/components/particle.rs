@@ -23,7 +23,7 @@ pub enum Charge {
 }
 
 impl Charge {
-    pub fn value(&self) -> f32 {
+    pub fn charge(&self) -> f32 {
         match self {
             Charge::Positive(value) => *value,
             Charge::Negative(value) => *value,
@@ -98,12 +98,3 @@ impl GetColor for Particle {
         }
     }
 }
-
-// pub trait Particle {
-//     fn kind(&self) -> Kind;
-//     fn mass(&self) -> f32;
-//     fn charge(&self) -> Charge;
-// }
-
-// #[derive(Component, Debug, Clone, Copy)]
-// pub struct ParticleMarker;

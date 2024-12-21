@@ -58,6 +58,22 @@ pub fn spawn_particles(mut commands: Commands) {
         };
         commands.spawn((particle, Transform::from_translation(position)));
     }
+
+    // let particles = [
+    //     (Vec3::new(0.0, 0.0, 0.0), Kind::Proton),
+    //     (Vec3::new(1.0, 0.0, 0.0), Kind::Electron),
+    //     (Vec3::new(0.0, 1.0, 0.0), Kind::Neutron),
+    // ];
+
+    // for (position, kind) in particles {
+    //     let particle = match kind {
+    //         Kind::Proton => Particle::proton(),
+    //         Kind::Neutron => Particle::neutron(),
+    //         Kind::Electron => Particle::electron(),
+    //         _ => unreachable!(),
+    //     };
+    //     commands.spawn((particle, Transform::from_translation(position)));
+    // }
 }
 
 pub fn init_particles(
