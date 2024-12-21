@@ -12,7 +12,7 @@ resolver = "2"
 members = [
     "crates/universe",
     "crates/mechanics",
-    "crates/view",
+    "crates/view", "crates/dynamics",
 ]
 
 [workspace.dependencies]
