@@ -7,6 +7,10 @@ authors.workspace      = true
 rust-version.workspace = true
 
 [dependencies]
+# Internal Crates
+dynamics.workspace = true
+
+# Third Party Crates
 bevy.workspace         = true
 strum.workspace        = true
 strum_macros.workspace = true

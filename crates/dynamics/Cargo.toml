@@ -7,6 +7,10 @@ authors.workspace      = true
 rust-version.workspace = true
 
 [dependencies]
+# Internal
+# mechanics.workspace = true
+
+# Third party
 bevy.workspace = true
 
 [lints]

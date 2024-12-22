@@ -1,5 +1,7 @@
-mod velocity;
 mod acceleration;
+mod debug;
+mod velocity;
 
-pub use velocity::*;
 pub use acceleration::*;
+pub use debug::*;
+pub use velocity::*;

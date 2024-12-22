@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use dynamics::Acceleration;
 use strum_macros::EnumIter;
 
 use super::{
@@ -33,6 +34,7 @@ impl Charge {
 }
 
 #[derive(Component, Debug, Clone, Copy)]
+#[require(Acceleration)]
 pub struct Particle {
     pub kind: Kind,
     pub mass: f32,
@@ -45,7 +47,7 @@ impl Particle {
         Self {
             kind: Kind::Proton,
             mass: PROTON_MASS,
-            radius: 0.5,
+            radius: 1.0,
             charge: PROTON_CHARGE,
         }
     }
@@ -54,7 +56,7 @@ impl Particle {
         Self {
             kind: Kind::Neutron,
             mass: NEUTRON_MASS,
-            radius: 0.5,
+            radius: 1.0,
             charge: NEUTRON_CHARGE,
         }
     }
@@ -63,7 +65,7 @@ impl Particle {
         Self {
             kind: Kind::Electron,
             mass: ELECTRON_MASS,
-            radius: 0.1,
+            radius: 0.5,
             charge: ELECTRON_CHARGE,
         }
     }
@@ -72,7 +74,7 @@ impl Particle {
         Self {
             kind: Kind::Photon,
             mass: 0.0,
-            radius: 0.05,
+            radius: 0.1,
             charge: Charge::Neutral,
         }
     }

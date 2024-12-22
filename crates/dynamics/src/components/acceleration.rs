@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
+use super::Velocity;
+
 #[derive(Component)]
+#[require(Velocity)]
 pub struct Acceleration {
     pub value: Vec3,
 }

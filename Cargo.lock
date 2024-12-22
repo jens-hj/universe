@@ -2613,6 +2613,7 @@ name = "mechanics"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "dynamics",
  "strum",
  "strum_macros",
 ]
@@ -4190,6 +4191,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_blendy_cameras",
+ "dynamics",
  "mechanics",
  "rand",
  "strum",

@@ -12,7 +12,8 @@ resolver = "2"
 members = [
     "crates/universe",
     "crates/mechanics",
-    "crates/view", "crates/dynamics",
+    "crates/view",
+    "crates/dynamics",
 ]
 
 [workspace.dependencies]
@@ -20,6 +21,7 @@ members = [
 universe.path  = "crates/universe"
 mechanics.path = "crates/mechanics"
 view.path      = "crates/view"
+dynamics.path  = "crates/dynamics"
 
 # Third Party Crates
 bevy = { version = "0.15", default-features = true, features = [
