@@ -34,6 +34,7 @@ pub fn setup_view(
 
 pub fn spawn_particles(mut commands: Commands) {
     let kinds = [Kind::Proton, Kind::Neutron, Kind::Electron];
+    // let kinds = [Kind::Proton, Kind::Neutron];
 
     // generate 5 random positions for each kind in {Proton, Neutron, Electron}
     // in total 15 particles
