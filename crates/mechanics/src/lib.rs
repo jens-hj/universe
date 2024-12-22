@@ -1,4 +1,5 @@
 mod components;
+pub mod element;
 mod plugins;
 mod systems;
 

@@ -3,6 +3,7 @@ use dynamics::Acceleration;
 use std::collections::HashMap;
 
 use crate::particle::Particle;
+use crate::{element, Atom, AtomHitbox, Kind};
 
 const GRAVITATIONAL_CONSTANT: f32 = 50000.0;
 const COULOMB_CONSTANT: f32 = 70000.0;
@@ -103,5 +104,127 @@ pub fn apply_forces(
             // transform.translation += final_change;
             // transform.translation += change;
         }
+    }
+}
+
+pub fn detect_atoms(
+    mut commands: Commands,
+    particle_query: Query<(Entity, &Transform, &Particle)>,
+    mut atoms: Query<(Entity, &mut Atom)>,
+) {
+    // temporarily clear atoms
+    for (entity, atom) in atoms.iter_mut() {
+        info!("{}", *atom);
+        commands.entity(entity).despawn_recursive();
+    }
+
+    // Constants for atom detection
+    const NUCLEUS_FORMATION_DISTANCE: f32 = 8.0; // Distance for protons/neutrons to form nucleus
+
+    // First, find nuclei (clusters of protons and neutrons)
+    let mut potential_nuclei: Vec<Vec<(Entity, Vec3, &Particle)>> = Vec::new();
+
+    // Group nearby protons and neutrons
+    for (entity_a, transform_a, particle_a) in particle_query.iter() {
+        if !matches!(particle_a.kind, Kind::Proton | Kind::Neutron) {
+            continue;
+        }
+
+        let pos_a = transform_a.translation;
+        let mut found_cluster = false;
+
+        // Try to add to existing cluster
+        for cluster in &mut potential_nuclei {
+            let cluster_center = cluster
+                .iter()
+                .map(|(_, pos, _)| *pos)
+                .reduce(|a, b| a + b)
+                .unwrap()
+                / cluster.len() as f32;
+
+            if (pos_a - cluster_center).length() < NUCLEUS_FORMATION_DISTANCE {
+                cluster.push((entity_a, pos_a, particle_a));
+                found_cluster = true;
+                break;
+            }
+        }
+
+        // Create new cluster if needed
+        if !found_cluster {
+            potential_nuclei.push(vec![(entity_a, pos_a, particle_a)]);
+        }
+    }
+
+    // For each potential nucleus, look for orbiting electrons
+    for nucleus in potential_nuclei {
+        if nucleus.len() < 2 {
+            // Require at least 2 nucleons
+            continue;
+        }
+
+        let nucleus_center = nucleus
+            .iter()
+            .map(|(_, pos, _)| *pos)
+            .reduce(|a, b| a + b)
+            .unwrap()
+            / nucleus.len() as f32;
+
+        let proton_count = nucleus
+            .iter()
+            .filter(|(_, _, p)| p.kind == Kind::Proton)
+            .count() as u32;
+
+        if proton_count == 0 || proton_count > element::MAX_ATOMIC_NUMBER as u32 {
+            continue;
+        }
+
+        let neutron_count = nucleus
+            .iter()
+            .filter(|(_, _, p)| p.kind == Kind::Neutron)
+            .count() as u32;
+
+        let constituent_particles = nucleus.iter().map(|(e, _, _)| *e).collect::<Vec<_>>();
+        // constituent_particles.extend(orbiting_electrons.iter());
+        let atom = match Atom::new(
+            nucleus_center,
+            proton_count,
+            neutron_count,
+            0,
+            constituent_particles,
+        ) {
+            Ok(atom) => atom,
+            Err(e) => {
+                error!("Failed to create atom: {}", e);
+                continue;
+            }
+        };
+        commands.spawn(atom);
+        // }
+    }
+}
+
+pub fn atom_hitbox(
+    mut commands: Commands,
+    query: Query<&Atom, Added<Atom>>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    query_hitbox: Query<Entity, With<AtomHitbox>>,
+) {
+    // clear all previous hitboxes
+    for entity in query_hitbox.iter() {
+        commands.entity(entity).despawn_recursive();
+    }
+
+    for atom in query.iter() {
+        commands.spawn((
+            Transform::from_translation(atom.nucleus_center),
+            Mesh3d(meshes.add(Sphere::new(atom.radius()).mesh().ico(10).unwrap())),
+            MeshMaterial3d(materials.add(StandardMaterial {
+                base_color: Color::srgba_u8(205, 214, 244, 20),
+                alpha_mode: AlphaMode::Blend,
+                ..default()
+            })),
+            AtomHitbox,
+        ));
     }
 }
