@@ -136,6 +136,6 @@ impl Element {
 
 impl std::fmt::Display for Element {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self)
+        format!("{:?}", self).fmt(f)
     }
 }

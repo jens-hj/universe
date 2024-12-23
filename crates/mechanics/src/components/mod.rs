@@ -9,5 +9,4 @@ pub use atom::*;
 pub use electron::*;
 pub use neutron::*;
 pub use particle::*;
-pub use photon::*;
 pub use proton::*;

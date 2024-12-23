@@ -40,7 +40,7 @@ pub fn spawn_particles(mut commands: Commands) {
     // in total 15 particles
     // in the range of [-10, 10]
     const PARTICLE_COUNT: usize = 200;
-    const SPAWN_RADIUS: f32 = 500.0;
+    const SPAWN_RADIUS: f32 = 200.0;
     let particles = (0..PARTICLE_COUNT).map(|_| {
         (
             Vec3::new(
