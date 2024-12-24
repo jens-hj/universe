@@ -39,12 +39,12 @@ pub fn setup_view(
 }
 
 pub fn spawn_particles(mut commands: Commands) {
-    const SPAWN_RADIUS: f32 = 200.0;
+    const SPAWN_RADIUS: f32 = 300.0;
 
     // Define count for each particle type
     let particle_counts = [
-        (Kind::Proton, 104),
-        (Kind::Neutron, 157),
+        (Kind::Proton, 92),
+        (Kind::Neutron, 141),
         // (Kind::Electron, 50),  // Commented out as per original
     ];
 

@@ -10,6 +10,8 @@ const COULOMB_CONSTANT: f32 = 69000.0;
 const STRONG_FORCE_CONSTANT: f32 = 1000000.0;
 const RANGE_CONSTANT: f32 = 2.0;
 const EQUILIBRIUM_DISTANCE: f32 = 5.0;
+const UNSELECTED_ALPHA: f32 = 20.0 / 255.0;
+const SELECTED_ALPHA: f32 = 100.0 / 255.0;
 // const MAX_FORCE: f32 = 1000.0;
 
 // Helper struct to store accumulated forces
@@ -91,7 +93,7 @@ pub fn apply_forces(
     }
 }
 
-const NUCLEUS_FORMATION_DISTANCE: f32 = 10.0;
+const NUCLEUS_FORMATION_DISTANCE: f32 = 13.0;
 
 pub fn detect_atoms(
     mut commands: Commands,
@@ -252,9 +254,9 @@ pub fn maintain_atom_hitbox_colour(
     for (atom, material, hitbox) in query.iter_mut() {
         if let Some(material) = materials.get_mut(&material.0) {
             let alpha = if hitbox.selected {
-                50.0 / 255.0
+                SELECTED_ALPHA
             } else {
-                20.0 / 255.0
+                UNSELECTED_ALPHA
             };
             material.base_color = atom.element.color().with_alpha(alpha);
         }
@@ -274,8 +276,10 @@ pub fn spawn_atom_hitbox(
                 Mesh3d(meshes.add(Sphere::new(1.0).mesh().ico(10).unwrap())),
                 MeshMaterial3d(materials.add(StandardMaterial {
                     base_color: match hitbox.selected {
-                        true => atom.element.color().with_alpha(50.0 / 255.0),
-                        false => atom.element.color().with_alpha(20.0 / 255.0),
+                        true => atom.element.color().with_alpha(SELECTED_ALPHA),
+                        false => {
+                            atom.element.color().with_alpha(UNSELECTED_ALPHA)
+                        }
                     },
                     alpha_mode: AlphaMode::Blend,
                     ..default()
@@ -298,7 +302,7 @@ fn over_atom(
         }
 
         if let Some(material) = materials.get_mut(&material.0) {
-            material.base_color.set_alpha(50.0 / 255.0);
+            material.base_color.set_alpha(SELECTED_ALPHA);
         }
     }
 }
@@ -314,7 +318,7 @@ fn out_atom(
         }
 
         if let Some(material) = materials.get_mut(&material.0) {
-            material.base_color.set_alpha(20.0 / 255.0);
+            material.base_color.set_alpha(UNSELECTED_ALPHA);
         }
     }
 }
@@ -343,7 +347,7 @@ fn click_atom(
             match hitbox.selected {
                 true => {
                     material.base_color =
-                        atom.element.color().with_alpha(50.0 / 255.0);
+                        atom.element.color().with_alpha(SELECTED_ALPHA);
                     // deselect all other atoms
                     for (
                         other_entity,
@@ -363,14 +367,14 @@ fn click_atom(
                                 material.base_color = other_atom
                                     .element
                                     .color()
-                                    .with_alpha(20.0 / 255.0);
+                                    .with_alpha(UNSELECTED_ALPHA);
                             }
                         }
                     }
                 }
                 false => {
                     material.base_color =
-                        atom.element.color().with_alpha(20.0 / 255.0);
+                        atom.element.color().with_alpha(UNSELECTED_ALPHA);
                 }
             }
         }
