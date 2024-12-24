@@ -1,15 +1,16 @@
 [package]
-name = "universe"
-version = "0.1.0"
-edition.workspace = true
-repository.workspace = true
-authors.workspace = true
+name                   = "universe"
+version                = "0.1.0"
+edition.workspace      = true
+repository.workspace   = true
+authors.workspace      = true
 rust-version.workspace = true
 
 [dependencies]
 # Internal Crates
 mechanics.workspace = true
-view.workspace = true
+view.workspace      = true
+hud.workspace       = true
 
 # Third Party Crates
 bevy.workspace = true

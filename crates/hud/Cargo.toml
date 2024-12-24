@@ -7,7 +7,12 @@ authors.workspace      = true
 rust-version.workspace = true
 
 [dependencies]
-bevy.workspace = true
+# Internal Crates
+mechanics.workspace = true
+
+# Third Party Crate
+bevy.workspace         = true
+iyes_perf_ui.workspace = true
 
 [lints]
 workspace = true

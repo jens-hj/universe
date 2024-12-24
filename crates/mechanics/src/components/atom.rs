@@ -2,6 +2,8 @@ use bevy::prelude::*;
 
 use crate::element::Element;
 
+use super::{NEUTRON_MASS, PROTON_MASS};
+
 #[derive(Component, Debug)]
 #[require(Transform)]
 pub struct Atom {
@@ -40,7 +42,12 @@ impl Atom {
         // - A is the mass number (total nucleons)
         const R0: f32 = 2.4;
         let mass_number = self.proton_count + self.neutron_count;
-        R0 * (mass_number as f32).powf(1.0 / 3.0)
+        R0 * (mass_number as f32).powf(1.0 / 4.0)
+    }
+
+    pub fn mass(&self) -> f32 {
+        self.proton_count as f32 * PROTON_MASS
+            + self.neutron_count as f32 * NEUTRON_MASS
     }
 }
 
@@ -49,7 +56,10 @@ impl std::fmt::Display for Atom {
         write!(
             f,
             "{:<13} | {:>3} P, {:>3} N, {:>3} e",
-            self.element, self.proton_count, self.neutron_count, self.electron_count
+            self.element,
+            self.proton_count,
+            self.neutron_count,
+            self.electron_count
         )
     }
 }

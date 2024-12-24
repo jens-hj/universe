@@ -6,7 +6,7 @@ use crate::particle::Particle;
 use crate::{element, Atom, AtomHitbox, Kind};
 
 const GRAVITATIONAL_CONSTANT: f32 = 50000.0;
-const COULOMB_CONSTANT: f32 = 70000.0;
+const COULOMB_CONSTANT: f32 = 69000.0;
 const STRONG_FORCE_CONSTANT: f32 = 1000000.0;
 const RANGE_CONSTANT: f32 = 2.0;
 const EQUILIBRIUM_DISTANCE: f32 = 5.0;
@@ -36,16 +36,20 @@ pub fn apply_forces(
 
         // Gravitational force
         let grav_force =
-            GRAVITATIONAL_CONSTANT * particle_a.mass * particle_b.mass / distance.powi(2);
+            GRAVITATIONAL_CONSTANT * particle_a.mass * particle_b.mass
+                / distance.powi(2);
         let grav_change = direction * grav_force;
 
         // Electromagnetic force
-        let em_force = -COULOMB_CONSTANT * particle_a.charge.charge() * particle_b.charge.charge()
+        let em_force = -COULOMB_CONSTANT
+            * particle_a.charge.charge()
+            * particle_b.charge.charge()
             / distance.powi(2);
         let em_change = direction * em_force;
 
         // Strong force
-        let force = (-distance * RANGE_CONSTANT).exp() * (distance - EQUILIBRIUM_DISTANCE);
+        let force = (-distance * RANGE_CONSTANT).exp()
+            * (distance - EQUILIBRIUM_DISTANCE);
         let strong_force = if distance < EQUILIBRIUM_DISTANCE {
             // Apply damping factor only during repulsion (when particles are too close)
             STRONG_FORCE_CONSTANT * force * 1.0 // Adjust this damping factor as needed
@@ -69,7 +73,8 @@ pub fn apply_forces(
     // Apply accumulated forces
     for (entity, _transform, mut acceleration, particle) in query.iter_mut() {
         if let Some(forces) = force_map.get(&entity) {
-            let total_force = forces.gravity + forces.electromagnetic + forces.strong;
+            let total_force =
+                forces.gravity + forces.electromagnetic + forces.strong;
             let change = total_force * time.delta_secs();
 
             // TODO: Handle this better by applying acceleration from the force -> then resulting in a velocity
@@ -86,12 +91,15 @@ pub fn apply_forces(
     }
 }
 
-const NUCLEUS_FORMATION_DISTANCE: f32 = 8.0;
+const NUCLEUS_FORMATION_DISTANCE: f32 = 10.0;
 
 pub fn detect_atoms(
     mut commands: Commands,
     particle_query: Query<(Entity, &Transform, &Particle)>,
-    mut atoms: Query<(Entity, &mut Atom, &mut Transform, &mut AtomHitbox), Without<Particle>>,
+    mut atoms: Query<
+        (Entity, &mut Atom, &mut Transform, &mut AtomHitbox),
+        Without<Particle>,
+    >,
 ) {
     // Track which atoms are still valid
     let mut active_atoms = std::collections::HashSet::new();
@@ -148,7 +156,8 @@ pub fn detect_atoms(
             .filter(|(_, _, p)| p.kind == Kind::Proton)
             .count() as u32;
 
-        if proton_count == 0 || proton_count > element::MAX_ATOMIC_NUMBER as u32 {
+        if proton_count == 0 || proton_count > element::MAX_ATOMIC_NUMBER as u32
+        {
             continue;
         }
 
@@ -157,7 +166,8 @@ pub fn detect_atoms(
             .filter(|(_, _, p)| p.kind == Kind::Neutron)
             .count() as u32;
 
-        let constituent_particles: Vec<Entity> = nucleus.iter().map(|(e, _, _)| *e).collect();
+        let constituent_particles: Vec<Entity> =
+            nucleus.iter().map(|(e, _, _)| *e).collect();
 
         // Try to find an existing atom with overlapping constituents
         let mut updated_existing = false;
@@ -177,7 +187,9 @@ pub fn detect_atoms(
         }
 
         // Now update or create the atom with the correct selected state
-        for (atom_entity, mut atom, mut transform, mut hitbox) in atoms.iter_mut() {
+        for (atom_entity, mut atom, mut transform, mut hitbox) in
+            atoms.iter_mut()
+        {
             if atom
                 .constituent_particles
                 .iter()
@@ -203,7 +215,9 @@ pub fn detect_atoms(
 
         // Create new atom if no existing one was updated
         if !updated_existing {
-            if let Ok(atom) = Atom::new(proton_count, neutron_count, 0, constituent_particles) {
+            if let Ok(atom) =
+                Atom::new(proton_count, neutron_count, 0, constituent_particles)
+            {
                 let transform = Transform::from_translation(nucleus_center)
                     .with_scale(Vec3::splat(atom.radius()));
                 let entity = commands
@@ -228,19 +242,41 @@ pub fn detect_atoms(
     }
 }
 
+pub fn maintain_atom_hitbox_colour(
+    mut query: Query<
+        (&Atom, &mut MeshMaterial3d<StandardMaterial>, &AtomHitbox),
+        Changed<Atom>,
+    >,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    for (atom, material, hitbox) in query.iter_mut() {
+        if let Some(material) = materials.get_mut(&material.0) {
+            let alpha = if hitbox.selected {
+                50.0 / 255.0
+            } else {
+                20.0 / 255.0
+            };
+            material.base_color = atom.element.color().with_alpha(alpha);
+        }
+    }
+}
+
 pub fn spawn_atom_hitbox(
     mut commands: Commands,
-    query: Query<Entity, (Added<Atom>, With<AtomHitbox>)>,
+    query: Query<(Entity, &Atom, &AtomHitbox), Added<Atom>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    for entity in query.iter() {
+    for (entity, atom, hitbox) in query.iter() {
         commands
             .entity(entity)
             .insert((
                 Mesh3d(meshes.add(Sphere::new(1.0).mesh().ico(10).unwrap())),
                 MeshMaterial3d(materials.add(StandardMaterial {
-                    base_color: Color::srgba_u8(205, 214, 244, 20),
+                    base_color: match hitbox.selected {
+                        true => atom.element.color().with_alpha(50.0 / 255.0),
+                        false => atom.element.color().with_alpha(20.0 / 255.0),
+                    },
                     alpha_mode: AlphaMode::Blend,
                     ..default()
                 })),
@@ -289,6 +325,7 @@ fn click_atom(
         Entity,
         &mut MeshMaterial3d<StandardMaterial>,
         &mut AtomHitbox,
+        &Atom,
     )>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
@@ -297,27 +334,44 @@ fn click_atom(
         return;
     }
 
-    if let Ok((entity, material, mut hitbox)) = query.get_mut(trigger.entity()) {
+    if let Ok((entity, material_handle, mut hitbox, atom)) =
+        query.get_mut(trigger.entity())
+    {
         hitbox.selected = !hitbox.selected;
 
-        if let Some(material) = materials.get_mut(&material.0) {
+        if let Some(material) = materials.get_mut(&material_handle.0) {
             match hitbox.selected {
                 true => {
-                    material.base_color = Color::srgba_u8(203, 166, 247, 50);
+                    material.base_color =
+                        atom.element.color().with_alpha(50.0 / 255.0);
                     // deselect all other atoms
-                    for (innter_entity, material, mut hitbox) in query.iter_mut() {
-                        if innter_entity == entity {
+                    for (
+                        other_entity,
+                        other_material_handle,
+                        mut other_hitbox,
+                        other_atom,
+                    ) in query.iter_mut()
+                    {
+                        if other_entity == entity {
                             continue;
                         }
-                        if hitbox.selected {
-                            hitbox.selected = false;
-                            if let Some(material) = materials.get_mut(&material.0) {
-                                material.base_color = Color::srgba_u8(205, 214, 244, 20);
+                        if other_hitbox.selected {
+                            other_hitbox.selected = false;
+                            if let Some(material) =
+                                materials.get_mut(&other_material_handle.0)
+                            {
+                                material.base_color = other_atom
+                                    .element
+                                    .color()
+                                    .with_alpha(20.0 / 255.0);
                             }
                         }
                     }
                 }
-                false => material.base_color = Color::srgba_u8(205, 214, 244, 20),
+                false => {
+                    material.base_color =
+                        atom.element.color().with_alpha(20.0 / 255.0);
+                }
             }
         }
     }
