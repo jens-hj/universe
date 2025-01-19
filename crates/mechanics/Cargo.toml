@@ -8,7 +8,7 @@ rust-version.workspace = true
 
 [dependencies]
 # Internal Crates
-dynamics.workspace = true
+bevy_dynamics.workspace = true
 
 # Third Party Crates
 bevy.workspace         = true

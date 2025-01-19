@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_blendy_cameras::{FlyCameraController, OrbitCameraController};
-use dynamics::Debug;
+use bevy_dynamics::{Damping, Debug};
 use mechanics::particle::{GetColor, Kind, Particle};
 
 use crate::ParticleView;
@@ -43,7 +43,7 @@ pub fn spawn_particles(mut commands: Commands) {
 
     // Define count for each particle type
     let particle_counts = [
-        (Kind::Proton, 104),
+        (Kind::Proton, 118),
         (Kind::Neutron, 157),
         // (Kind::Electron, 50),  // Commented out as per original
     ];
@@ -64,11 +64,18 @@ pub fn spawn_particles(mut commands: Commands) {
                 _ => unreachable!(),
             };
             let particle_entity = commands
-                .spawn((particle, Transform::from_translation(position)))
+                .spawn((
+                    particle,
+                    Transform::from_translation(position),
+                    Damping::new(2.0),
+                ))
                 .id();
 
             if [Kind::Proton, Kind::Neutron].contains(&kind) {
-                commands.entity(particle_entity).insert(Debug(false));
+                commands.entity(particle_entity).insert(Debug {
+                    acceleration: false,
+                    velocity: false,
+                });
             }
         }
     }
@@ -163,7 +170,8 @@ pub fn toggle_debug(
 ) {
     if keyboard_input.just_pressed(KeyCode::KeyU) {
         for mut debug in query.iter_mut() {
-            debug.0 = !debug.0;
+            debug.acceleration = !debug.acceleration;
+            debug.velocity = !debug.velocity;
         }
     }
 }

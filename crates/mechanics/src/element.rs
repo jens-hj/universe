@@ -4,7 +4,7 @@ use std::str::FromStr;
 use strum::IntoEnumIterator;
 use strum_macros::{EnumIter, EnumString};
 
-pub const MAX_ATOMIC_NUMBER: usize = 118;
+// pub const MAX_ATOMIC_NUMBER: usize = 119;
 
 #[derive(EnumString, Debug, EnumIter)]
 pub enum Element {
@@ -126,6 +126,7 @@ pub enum Element {
     Livermorium,   // 116
     Tennessine,    // 117
     Oganesson,     // 118
+    Kevorkium,     // 119
 }
 
 impl Element {
@@ -155,22 +156,22 @@ impl Element {
             Oxygen => Color::srgb_u8(235, 160, 172),   // Red (Maroon)
             Fluorine | Chlorine => Color::srgb_u8(166, 227, 161), // Green
             Bromine => Color::srgb_u8(243, 139, 168),  // Dark Red (Red)
-            Iodine => Color::srgb_u8(203, 166, 247),   // Dark Violet (Mauve)
+            Iodine | Kevorkium => Color::srgb_u8(203, 166, 247), // Dark Violet (Mauve)
             Helium | Neon | Argon | Krypton | Xenon | Radon => {
                 Color::srgb_u8(148, 226, 213)
             } // Cyan (Teal)
             Phosphorus => Color::srgb_u8(250, 179, 135), // Orange (Peach)
-            Sulfur => Color::srgb_u8(249, 226, 175),   // Yellow (Yellow)
-            Boron => Color::srgb_u8(245, 224, 220),    // Beige (Rosewater)
+            Sulfur => Color::srgb_u8(249, 226, 175),     // Yellow (Yellow)
+            Boron => Color::srgb_u8(245, 224, 220),      // Beige (Rosewater)
             Lithium | Sodium | Potassium | Rubidium | Caesium | Francium => {
                 Color::srgb_u8(245, 194, 231)
             } // Violet (Pink)
             Beryllium | Magnesium | Calcium | Strontium | Barium | Radium => {
                 Color::srgb_u8(166, 227, 161)
             } // Dark Green (Green)
-            Titanium => Color::srgb_u8(147, 153, 178), // Gray (Overlay2)
-            Iron => Color::srgb_u8(250, 179, 135),     // Dark Orange (Peach)
-            _ => Color::srgb_u8(242, 205, 205),        // Pink (Flamingo)
+            Titanium => Color::srgb_u8(147, 153, 178),   // Gray (Overlay2)
+            Iron => Color::srgb_u8(250, 179, 135),       // Dark Orange (Peach)
+            _ => Color::srgb_u8(242, 205, 205),          // Pink (Flamingo)
         }
     }
 }
@@ -419,6 +420,8 @@ pub enum ElementSymbol {
     Ts, // 117 Tennessine
     #[strum(serialize = "Og", serialize = "Oganesson")]
     Og, // 118 Oganesson
+    #[strum(serialize = "Kv", serialize = "Kevorkium")]
+    Kv, // 119 Kevorkium
 }
 
 impl std::fmt::Display for ElementSymbol {

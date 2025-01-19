@@ -557,6 +557,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_dynamics"
+version = "0.4.1"
+source = "git+https://github.com/jens-hj/bevy_dynamics.git?rev=6516f5f5f05722edbd627576bb9b7198487acd34#6516f5f5f05722edbd627576bb9b7198487acd34"
+dependencies = [
+ "bevy",
+]
+
+[[package]]
 name = "bevy_ecs"
 version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1857,13 +1865,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f25c0e292a7ca6d6498557ff1df68f32c99850012b6ea401cf8daf771f22ff53"
 
 [[package]]
-name = "dynamics"
-version = "0.1.0"
-dependencies = [
- "bevy",
-]
-
-[[package]]
 name = "either"
 version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2673,7 +2674,7 @@ name = "mechanics"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "dynamics",
+ "bevy_dynamics",
  "strum",
  "strum_macros",
 ]
@@ -4252,7 +4253,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy_blendy_cameras",
- "dynamics",
+ "bevy_dynamics",
  "mechanics",
  "rand",
  "strum",

@@ -6,6 +6,8 @@ use view::ViewPlugin;
 fn main() {
     let mut app = App::new();
 
+    app.insert_resource(Time::<Fixed>::from_hz(100.0));
+
     // Bevy plugins
     app.add_plugins((DefaultPlugins, MeshPickingPlugin));
 

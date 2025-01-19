@@ -40,9 +40,9 @@ impl Atom {
         // Nuclear radius follows R = r0 * A^(1/3) where:
         // - r0 is approximately 2.4 femtometers (we'll use 2.4 as our unit scale)
         // - A is the mass number (total nucleons)
-        const R0: f32 = 2.4;
+        const R0: f32 = 3.0;
         let mass_number = self.proton_count + self.neutron_count;
-        R0 * (mass_number as f32).powf(1.0 / 4.0)
+        R0 * (mass_number as f32).powf(1.0 / 5.0)
     }
 
     pub fn mass(&self) -> f32 {

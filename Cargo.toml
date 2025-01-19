@@ -13,7 +13,6 @@ members = [
     "crates/universe",
     "crates/mechanics",
     "crates/view",
-    "crates/dynamics",
     "crates/hud",
 ]
 
@@ -22,8 +21,10 @@ members = [
 universe.path  = "crates/universe"
 mechanics.path = "crates/mechanics"
 view.path      = "crates/view"
-dynamics.path  = "crates/dynamics"
 hud.path      = "crates/hud"
+
+# Own Crates on Git
+bevy_dynamics = { rev = "6516f5f5f05722edbd627576bb9b7198487acd34", git = "https://github.com/jens-hj/bevy_dynamics.git", features = ["debug"] }
 
 # Third Party Crates
 bevy = { version = "0.15", default-features = true, features = [

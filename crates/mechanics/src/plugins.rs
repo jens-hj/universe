@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use dynamics::DynamicsPlugin;
+use bevy_dynamics::DynamicsPlugin;
 
 // use crate::{electromagnetic_interaction, gravity, strong_interaction};
 use crate::{

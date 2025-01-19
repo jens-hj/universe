@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use dynamics::Acceleration;
+use bevy_dynamics::Acceleration;
 use strum_macros::EnumIter;
 
 use super::{
@@ -93,10 +93,10 @@ pub trait GetColor {
 impl GetColor for Particle {
     fn get_color(&self) -> Color {
         match self.kind {
-            Kind::Proton => Color::srgb_u8(243, 139, 168),   // red
-            Kind::Neutron => Color::srgb_u8(180, 190, 254),  // blue
+            Kind::Proton => Color::srgb_u8(243, 139, 168), // red
+            Kind::Neutron => Color::srgb_u8(180, 190, 254), // blue
             Kind::Electron => Color::srgb_u8(166, 227, 161), // green
-            Kind::Photon => Color::srgb_u8(249, 226, 175),   // yellow
+            Kind::Photon => Color::srgb_u8(249, 226, 175), // yellow
         }
     }
 }

@@ -1,9 +1,11 @@
 use bevy::prelude::*;
-use dynamics::Acceleration;
+use bevy_dynamics::Acceleration;
 use std::collections::HashMap;
+use strum::IntoEnumIterator;
 
+use crate::element::Element;
 use crate::particle::Particle;
-use crate::{element, Atom, AtomHitbox, Kind};
+use crate::{Atom, AtomHitbox, Kind};
 
 const GRAVITATIONAL_CONSTANT: f32 = 50000.0;
 const COULOMB_CONSTANT: f32 = 69000.0;
@@ -91,7 +93,7 @@ pub fn apply_forces(
     }
 }
 
-const NUCLEUS_FORMATION_DISTANCE: f32 = 10.0;
+const NUCLEUS_FORMATION_DISTANCE: f32 = 12.0;
 
 pub fn detect_atoms(
     mut commands: Commands,
@@ -156,8 +158,12 @@ pub fn detect_atoms(
             .filter(|(_, _, p)| p.kind == Kind::Proton)
             .count() as u32;
 
-        if proton_count == 0 || proton_count > element::MAX_ATOMIC_NUMBER as u32
-        {
+        if proton_count == 0 || proton_count > Element::iter().count() as u32 {
+            info!(
+                "Invalid proton count: {} > {}",
+                proton_count,
+                Element::iter().count()
+            );
             continue;
         }
 
